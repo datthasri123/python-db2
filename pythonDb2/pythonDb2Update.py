@@ -18,16 +18,22 @@ connString += ";PWD=" + passWord
 
 conn = ibm_db.connect(connString, "", "")
 
+account = '789171908858486'
+
 if conn:
-    sql = "SELECT FIRSTNME FROM EMPLOYEE"
-    stmt = ibm_db.exec_immediate(conn, sql)
-    result = ibm_db.fetch_both(stmt)
+    ibm_db.autocommit(ibm_db.SQL_AUTOCOMMIT_OFF)
+    sql = "UPDATE BALANCES SET AMOUNT = (AMOUNT * 0.1) + AMOUNT WHERE AC_ID = ?;"
+    # stmt = ibm_db.exec_immediate(conn, sql)
+    stmt = ibm_db.prepare(conn, sql)
+    ibm_db.bind_param(stmt, 1, account)
 
-    while result:
-        print('LAST NAME -> ', result[0])
-        result = ibm_db.fetch_both(stmt)
+    try:
+        ibm_db.execute(stmt)
+        ibm_db.commit(conn)
+    except:
+        print(ibm_db.stmt_errormsg())
+        print('connect not successful')
 
-    print('connect succesful')
 
 ibm_db.close(conn)
 print("connection closed")
