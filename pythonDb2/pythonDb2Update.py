@@ -16,12 +16,13 @@ connString += ";PROTOCOL=TCPIP"          # Required To Connect To A Server
 connString += ";UID=" + userID
 connString += ";PWD=" + passWord
 
+
 conn = ibm_db.connect(connString, "", "")
 
 account = '789171908858486'
 
 if conn:
-    ibm_db.autocommit(ibm_db.SQL_AUTOCOMMIT_OFF)
+    ibm_db.autocommit(conn, ibm_db.SQL_AUTOCOMMIT_OFF)
     sql = "UPDATE BALANCES SET AMOUNT = (AMOUNT * 0.1) + AMOUNT WHERE AC_ID = ?;"
     # stmt = ibm_db.exec_immediate(conn, sql)
     stmt = ibm_db.prepare(conn, sql)
